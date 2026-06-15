@@ -195,7 +195,7 @@
                 </nav>
                 
                 <div class="p-4 border-t border-slate-800 text-center text-xs text-slate-500">
-                    نسخة النظام الإداري المطور v2.5
+                    نسخة النظام الإداري المطور v2.7
                 </div>
             </aside>
 
@@ -206,7 +206,7 @@
                 <div id="screen-welcome" class="screen-content space-y-6">
                     <div class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-emerald-500/10 text-center space-y-6">
                         <h2 class="text-2xl md:text-3xl font-bold text-emerald-800">مرحباً بك في نظام شركة الجزيرة الخضراء للمواشي</h2>
-                        <p class="text-gray-500 max-w-xl mx-auto text-sm md:text-base">يوفر هذا النظام الإداري المتقدم كافة الأدوات للتحكم بالموظفين، الرواتب، الإجازات، الصيانة والمخزون، مع أقصى درجات حماية البيانات والتحكم بالصلاحيات والتصميم المتجاوب.</p>
+                        <p class="text-gray-500 max-w-xl mx-auto text-sm md:text-base">يوفر هذا النظام الإداري المتقدم كافة الأدوات للتحكم بالموظفين، الرواتب، الإجازات، الصيانة والمخزون، مع أقصى درجات حماية البيانات والتحكم بالصلاحيات والتصميم المتجاوب والهوية الهرمية للفروع والمسالخ.</p>
                         
                         <!-- الصورة الترحيبية القابلة للتغيير من الإعدادات -->
                         <div class="max-w-2xl mx-auto rounded-xl overflow-hidden shadow-md border-2 border-emerald-100">
@@ -272,6 +272,22 @@
                                 </div>
                             </div>
 
+                            <!-- تحديد موقع المسلخ الهرمي للموظف -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-emerald-50/50 p-3 rounded-xl border border-emerald-100">
+                                <div>
+                                    <label class="block text-xs font-semibold text-emerald-800 mb-1"><i class="fa-solid fa-tree-city ml-1"></i>المسلخ الرئيسي المعتمد</label>
+                                    <select id="emp-main-slaughterhouse" onchange="updateSubSlaughterhouseDropdown()" required class="w-full border border-emerald-200 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-emerald-500 outline-none bg-white">
+                                        <!-- سيتم تحميله ديناميكياً -->
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-emerald-800 mb-1"><i class="fa-solid fa-store ml-1"></i>المسلخ الفرعي (تلقائي بناءً على الرئيسي)</label>
+                                    <select id="emp-sub-slaughterhouse" required class="w-full border border-emerald-200 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-emerald-500 outline-none bg-white">
+                                        <!-- سيتم تحميله ديناميكياً -->
+                                    </select>
+                                </div>
+                            </div>
+
                             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                                 <div>
                                     <label class="block text-xs font-semibold text-gray-500 mb-1">رقم الجواز</label>
@@ -324,11 +340,30 @@
                         </form>
                     </div>
 
-                    <!-- قائمة الموظفين المسجلين -->
+                    <!-- قائمة الموظفين المسجلين مع الفلترة الجغرافية المتقدمة -->
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-emerald-500/10">
-                        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-2">
-                            <h3 class="text-base md:text-lg font-bold text-gray-800">قائمة الموظفين الحاليين</h3>
-                            <input type="text" id="emp-search" oninput="renderEmployeesTable()" placeholder="ابحث باسم الموظف أو رقمه..." class="px-4 py-2 border border-gray-300 rounded-xl text-sm outline-none focus:ring-1 focus:ring-emerald-500 w-full md:w-64">
+                        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6 gap-4 border-b border-gray-100 pb-4">
+                            <div>
+                                <h3 class="text-base md:text-lg font-bold text-gray-800">قائمة الموظفين الحاليين</h3>
+                                <p class="text-xs text-gray-400">تصفية الموظفين حسب المسلخ وموقع العمل الفعلي</p>
+                            </div>
+                            
+                            <!-- لوحة فلترة الموظفين حسب الموقع -->
+                            <div class="flex flex-wrap gap-2 items-center bg-emerald-50/50 p-2 rounded-xl border border-emerald-100">
+                                <div class="flex items-center gap-1">
+                                    <span class="text-xs font-bold text-emerald-800">المسلخ الرئيسي:</span>
+                                    <select id="filter-emp-main" onchange="onEmpFilterMainChange()" class="border border-emerald-200 rounded-lg px-2.5 py-1 text-xs bg-white outline-none">
+                                        <!-- تعبئة تلقائية -->
+                                    </select>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <span class="text-xs font-bold text-emerald-800">المسلخ الفرعي:</span>
+                                    <select id="filter-emp-sub" onchange="renderEmployeesTable()" class="border border-emerald-200 rounded-lg px-2.5 py-1 text-xs bg-white outline-none w-36">
+                                        <option value="">الكل</option>
+                                    </select>
+                                </div>
+                                <input type="text" id="emp-search" oninput="renderEmployeesTable()" placeholder="ابحث بالاسم أو الرقم الوظيفي..." class="px-3 py-1 border border-gray-300 rounded-lg text-xs outline-none focus:ring-1 focus:ring-emerald-500 w-full sm:w-48">
+                            </div>
                         </div>
 
                         <div class="overflow-x-auto">
@@ -338,8 +373,8 @@
                                         <th scope="col" class="px-4 py-3">الرقم</th>
                                         <th scope="col" class="px-4 py-3">الاسم</th>
                                         <th scope="col" class="px-4 py-3">الوظيفة</th>
+                                        <th scope="col" class="px-4 py-3">موقع العمل والمسلخ</th>
                                         <th scope="col" class="px-4 py-3">الجنسية</th>
-                                        <th scope="col" class="px-4 py-3">الهوية / الإقامة</th>
                                         <th scope="col" class="px-4 py-3">الراتب الاساسي</th>
                                         <th scope="col" class="px-4 py-3 text-center">العمليات وشهادة الراتب</th>
                                     </tr>
@@ -524,23 +559,38 @@
                         </form>
                     </div>
 
-                    <!-- فلترة وإصدار تقرير حضور وانصراف بين تاريخين -->
+                    <!-- سجل الحضور مع تصفية وحضور حسب الفروع والمسالخ -->
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-emerald-500/10">
-                        <div class="flex flex-col lg:flex-row lg:items-center justify-between mb-4 gap-4">
-                            <h3 class="text-base md:text-lg font-bold text-gray-800">سجل وتدقيق الحضور العام للشركة</h3>
+                        <div class="flex flex-col lg:flex-row lg:items-center justify-between mb-4 gap-4 border-b border-gray-100 pb-4">
+                            <div>
+                                <h3 class="text-base md:text-lg font-bold text-gray-800">سجل وتدقيق الحضور العام للشركة</h3>
+                                <p class="text-xs text-gray-400">تصفية وتدقيق الحضور والغياب للمواقع والتواريخ المحددة</p>
+                            </div>
                             
-                            <div class="flex flex-wrap gap-2 items-center">
-                                <div class="flex items-center gap-1">
-                                    <span class="text-xs font-bold text-gray-400">من</span>
-                                    <input type="date" id="filter-att-from" class="border border-gray-300 rounded-lg px-2 py-1 text-sm">
+                            <div class="flex flex-wrap gap-2 items-center bg-emerald-50/50 p-2 rounded-xl border border-emerald-100">
+                                <div class="flex items-center gap-1 text-xs">
+                                    <span class="font-bold text-emerald-800">المسلخ الرئيسي:</span>
+                                    <select id="filter-att-main" onchange="onAttFilterMainChange()" class="border border-emerald-200 rounded px-2 py-1 bg-white outline-none">
+                                        <!-- تعبئة تلقائية -->
+                                    </select>
                                 </div>
-                                <div class="flex items-center gap-1">
-                                    <span class="text-xs font-bold text-gray-400">إلى</span>
-                                    <input type="date" id="filter-att-to" class="border border-gray-300 rounded-lg px-2 py-1 text-sm">
+                                <div class="flex items-center gap-1 text-xs">
+                                    <span class="font-bold text-emerald-800">المسلخ الفرعي:</span>
+                                    <select id="filter-att-sub" onchange="renderAttendanceTable()" class="border border-emerald-200 rounded px-2 py-1 bg-white outline-none w-32">
+                                        <option value="">الكل</option>
+                                    </select>
                                 </div>
-                                <button onclick="filterAttendance()" class="px-3 py-1 bg-slate-800 text-white rounded-lg text-xs font-bold hover:bg-slate-900 transition">تطبيق الفلترة</button>
-                                <button onclick="printAttendanceReport()" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition flex items-center gap-1">
-                                    <i class="fa-solid fa-file-pdf"></i> تقرير PDF
+                                <div class="flex items-center gap-1 text-xs">
+                                    <span class="font-bold text-gray-400">من</span>
+                                    <input type="date" id="filter-att-from" class="border border-gray-300 rounded px-1.5 py-0.5">
+                                </div>
+                                <div class="flex items-center gap-1 text-xs">
+                                    <span class="font-bold text-gray-400">إلى</span>
+                                    <input type="date" id="filter-att-to" class="border border-gray-300 rounded px-1.5 py-0.5">
+                                </div>
+                                <button onclick="filterAttendance()" class="px-3 py-1 bg-slate-800 text-white rounded text-xs font-bold hover:bg-slate-900 transition">تطبيق</button>
+                                <button onclick="printAttendanceReport()" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded text-xs font-bold transition flex items-center gap-1">
+                                    <i class="fa-solid fa-file-pdf"></i> تصدير PDF
                                 </button>
                             </div>
                         </div>
@@ -551,6 +601,7 @@
                                     <tr>
                                         <th scope="col" class="px-4 py-3">رقم الموظف</th>
                                         <th scope="col" class="px-4 py-3">الاسم</th>
+                                        <th scope="col" class="px-4 py-3">الموقع والمسلخ</th>
                                         <th scope="col" class="px-4 py-3">تاريخ الرصد</th>
                                         <th scope="col" class="px-4 py-3">حالة الحضور</th>
                                         <th scope="col" class="px-4 py-3">وقت الحضور</th>
@@ -576,14 +627,32 @@
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <!-- تسجيل طلب صيانة -->
+                        <!-- تسجيل طلب صيانة مربوط بالموقع -->
                         <div class="bg-white p-6 rounded-2xl shadow-sm border border-emerald-500/10 lg:col-span-1">
                             <h3 class="text-base md:text-lg font-bold text-gray-800 mb-4">إنشاء بلاغ عطل / صيانة</h3>
                             <form id="maintenance-form" onsubmit="submitMaintenance(event)" class="space-y-4">
                                 <div>
-                                    <label class="block text-xs font-semibold text-gray-500 mb-1">اسم المركبة / الأصل / المسلخ</label>
+                                    <label class="block text-xs font-semibold text-gray-500 mb-1">اسم المركبة / الأصل التالف</label>
                                     <input type="text" id="maint-asset" required class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-emerald-500 outline-none" placeholder="مثال: سيارة تبريد رقم 15">
                                 </div>
+                                
+                                <!-- ربط البلاغ بالموقع المسبب أو الطالب -->
+                                <div class="bg-emerald-50/50 p-2.5 rounded-lg border border-emerald-100 space-y-2">
+                                    <span class="text-xs font-bold text-emerald-800 block">الموقع المسبب للبلاغ</span>
+                                    <div>
+                                        <label class="block text-[10px] font-semibold text-gray-500 mb-0.5">المسلخ الرئيسي</label>
+                                        <select id="maint-main-location" onchange="updateMaintSubLocationDropdown()" required class="w-full border border-emerald-200 rounded-lg px-2 py-1.5 text-xs bg-white focus:outline-none">
+                                            <!-- ديناميكي -->
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-semibold text-gray-500 mb-0.5">المسلخ الفرعي</label>
+                                        <select id="maint-sub-location" required class="w-full border border-emerald-200 rounded-lg px-2 py-1.5 text-xs bg-white focus:outline-none">
+                                            <!-- ديناميكي -->
+                                        </select>
+                                    </div>
+                                </div>
+
                                 <div>
                                     <label class="block text-xs font-semibold text-gray-500 mb-1">وصف العطل بالتفصيل</label>
                                     <textarea id="maint-desc" required class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-emerald-500 outline-none h-20" placeholder="تفاصيل العطل الفني"></textarea>
@@ -606,19 +675,33 @@
                             </form>
                         </div>
 
-                        <!-- قائمة الطلبات الحالية -->
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-emerald-500/10 lg:col-span-2">
-                            <h3 class="text-base md:text-lg font-bold text-gray-800 mb-4">طلبات الصيانة والمتابعة الجارية</h3>
+                        <!-- قائمة الطلبات الحالية مع فلترة متقدمة حسب المسالخ -->
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-emerald-500/10 lg:col-span-2 space-y-4">
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b pb-2">
+                                <h3 class="text-base md:text-lg font-bold text-gray-800">طلبات الصيانة والمتابعة الجارية</h3>
+                                
+                                <!-- فلتر الموقع للصيانة -->
+                                <div class="flex gap-1.5 items-center bg-gray-50 p-1.5 rounded-lg border text-xs">
+                                    <span class="font-bold text-slate-600">الموقع:</span>
+                                    <select id="filter-maint-main" onchange="onMaintFilterMainChange()" class="border rounded p-1 bg-white outline-none">
+                                        <!-- ديناميكي -->
+                                    </select>
+                                    <select id="filter-maint-sub" onchange="renderMaintenanceTable()" class="border rounded p-1 bg-white outline-none w-28">
+                                        <option value="">الكل</option>
+                                    </select>
+                                </div>
+                            </div>
+
                             <div class="overflow-x-auto">
                                 <table class="w-full text-sm text-right text-gray-500">
                                     <thead class="text-xs text-emerald-950 uppercase bg-emerald-50">
                                         <tr>
                                             <th scope="col" class="px-4 py-3">الأصل / المركبة</th>
+                                            <th scope="col" class="px-4 py-3">الموقع والفرع</th>
                                             <th scope="col" class="px-4 py-3">وصف العطل</th>
                                             <th scope="col" class="px-4 py-3">الأولوية</th>
-                                            <th scope="col" class="px-4 py-3">تاريخ البلاغ</th>
+                                            <th scope="col" class="px-4 py-3">التاريخ</th>
                                             <th scope="col" class="px-4 py-3">الحالة</th>
-                                            <th scope="col" class="px-4 py-3">الملف الداعم</th>
                                             <th scope="col" class="px-4 py-3 text-center">الإجراء</th>
                                         </tr>
                                     </thead>
@@ -641,7 +724,7 @@
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <!-- نموذج إدخال حركة مخزنية -->
+                        <!-- نموذج إدخال حركة مخزنية مربوطة بالمستودع الجغرافي للموقع -->
                         <div class="bg-white p-6 rounded-2xl shadow-sm border border-emerald-500/10 lg:col-span-1">
                             <h3 class="text-base md:text-lg font-bold text-gray-800 mb-4">تسجيل حركة مخزنية جديدة</h3>
                             <form id="inventory-form" onsubmit="saveInventoryItem(event)" class="space-y-4">
@@ -653,6 +736,25 @@
                                     <div>
                                         <label class="block text-xs font-semibold text-gray-500 mb-1">اسم الصنف</label>
                                         <input type="text" id="inv-name" required class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-emerald-500 outline-none">
+                                    </div>
+                                </div>
+
+                                <!-- ربط حركة المخزون بالمسلخ أو الفرع لتحديد الرصيد المحلي للفرع -->
+                                <div class="bg-emerald-50/50 p-2.5 rounded-lg border border-emerald-100 space-y-2">
+                                    <span class="text-xs font-bold text-emerald-800 block">الموقع المخزني المستهدف</span>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div>
+                                            <label class="block text-[10px] text-gray-500">المسلخ الرئيسي</label>
+                                            <select id="inv-main-location" onchange="updateInvSubLocationDropdown()" required class="w-full border border-emerald-200 rounded px-2 py-1 text-xs bg-white outline-none">
+                                                <!-- ديناميكي -->
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] text-gray-500">المسلخ الفرعي</label>
+                                            <select id="inv-sub-location" required class="w-full border border-emerald-200 rounded px-2 py-1 text-xs bg-white outline-none">
+                                                <!-- ديناميكي -->
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -698,13 +800,26 @@
                             </form>
                         </div>
 
-                        <!-- جدول رصيد المخزن الحالي -->
+                        <!-- جدول رصيد المخزن الحالي وتصفية المستودعات حسب الموقع -->
                         <div class="bg-white p-6 rounded-2xl shadow-sm border border-emerald-500/10 lg:col-span-2 space-y-4">
-                            <div class="flex items-center justify-between">
-                                <h3 class="text-base md:text-lg font-bold text-gray-800">مستودع الأرصدة والكميات الحالية</h3>
-                                <button onclick="printInventoryReport()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold transition flex items-center gap-1">
-                                    <i class="fa-solid fa-file-pdf"></i> تصدير الرصيد PDF
-                                </button>
+                            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b pb-2">
+                                <div>
+                                    <h3 class="text-base md:text-lg font-bold text-gray-800">مستودع الأرصدة والكميات الحالية</h3>
+                                    <p class="text-xs text-gray-400">تصفية وحصر الجرد المخزني الخاص بكل فرع وموقع</p>
+                                </div>
+                                
+                                <div class="flex flex-wrap gap-1.5 items-center bg-gray-50 p-2 rounded-lg border text-xs">
+                                    <span class="font-bold text-emerald-800">الموقع المخزني:</span>
+                                    <select id="filter-inv-main" onchange="onInvFilterMainChange()" class="border rounded p-1 bg-white outline-none">
+                                        <!-- ديناميكي -->
+                                    </select>
+                                    <select id="filter-inv-sub" onchange="renderInventoryTable()" class="border rounded p-1 bg-white outline-none w-28">
+                                        <option value="">الكل</option>
+                                    </select>
+                                    <button onclick="printInventoryReport()" class="px-2 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded font-semibold transition flex items-center gap-1">
+                                        <i class="fa-solid fa-file-pdf"></i> تصدير PDF
+                                    </button>
+                                </div>
                             </div>
 
                             <div class="overflow-x-auto">
@@ -713,10 +828,10 @@
                                         <tr>
                                             <th scope="col" class="px-4 py-3">كود الصنف</th>
                                             <th scope="col" class="px-4 py-3">اسم الصنف</th>
+                                            <th scope="col" class="px-4 py-3">الموقع / المسلخ</th>
                                             <th scope="col" class="px-4 py-3">النوع / الوحدة</th>
                                             <th scope="col" class="px-4 py-3">الكمية الحالية</th>
                                             <th scope="col" class="px-4 py-3">تاريخ الصلاحية</th>
-                                            <th scope="col" class="px-4 py-3">طبيعة التخزين</th>
                                             <th scope="col" class="px-4 py-3 text-center font-bold">الحذف والتحرير</th>
                                         </tr>
                                     </thead>
@@ -739,7 +854,7 @@
                     </div>
 
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-emerald-500/10">
-                        <h3 class="text-base md:text-lg font-bold text-gray-800 mb-4">تسجيل فاتورة شراء جديدة وتوريدها</h3>
+                        <h3 class="text-base md:text-lg font-bold text-gray-800 mb-4">تسجيل فاتورة شراء جديدة وتوريدها للفرع المستلم</h3>
                         <form id="purchase-form" onsubmit="savePurchase(event)" class="space-y-4">
                             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                                 <div>
@@ -775,6 +890,22 @@
                                 </div>
                             </div>
 
+                            <!-- تحديد موقع فرع المشتريات والمسلخ المستلم مالياً -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-emerald-50/50 p-3 rounded-xl border border-emerald-100">
+                                <div>
+                                    <label class="block text-xs font-semibold text-emerald-800 mb-1"><i class="fa-solid fa-hotel ml-1"></i>ترحيل الفاتورة وحسابها على المسلخ الرئيسي:</label>
+                                    <select id="pur-main-location" onchange="updatePurSubLocationDropdown()" required class="w-full border border-emerald-200 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-emerald-500 bg-white outline-none">
+                                        <!-- ديناميكي -->
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-emerald-800 mb-1"><i class="fa-solid fa-store ml-1"></i>المسلخ الفرعي المستلم:</label>
+                                    <select id="pur-sub-location" required class="w-full border border-emerald-200 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-emerald-500 bg-white outline-none">
+                                        <!-- ديناميكي -->
+                                    </select>
+                                </div>
+                            </div>
+
                             <div class="flex justify-end">
                                 <button type="submit" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-bold transition flex items-center gap-2">
                                     <i class="fa-solid fa-cart-shopping"></i> ترحيل الفاتورة للمالية والمخزن
@@ -783,18 +914,32 @@
                         </form>
                     </div>
 
-                    <!-- سجل المشتريات المعتمد -->
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-emerald-500/10">
-                        <h3 class="text-base md:text-lg font-bold text-gray-800 mb-4">سجل الفواتير والمشتريات الحالية</h3>
+                    <!-- سجل المشتريات المعتمد مع الفلترة حسب المواقع والمسالخ -->
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-emerald-500/10 space-y-4">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b pb-2">
+                            <h3 class="text-base md:text-lg font-bold text-gray-800">سجل الفواتير والمشتريات الحالية</h3>
+                            
+                            <!-- فلترة مشتريات حسب الموقع -->
+                            <div class="flex gap-1.5 items-center bg-gray-50 p-2 rounded-lg border text-xs">
+                                <span class="font-bold text-emerald-800">موقع المشتريات:</span>
+                                <select id="filter-pur-main" onchange="onPurFilterMainChange()" class="border rounded p-1 bg-white outline-none">
+                                    <!-- ديناميكي -->
+                                </select>
+                                <select id="filter-pur-sub" onchange="renderPurchasesTable()" class="border rounded p-1 bg-white outline-none w-28">
+                                    <option value="">الكل</option>
+                                </select>
+                            </div>
+                        </div>
+
                         <div class="overflow-x-auto">
                             <table class="w-full text-sm text-right text-gray-500">
                                 <thead class="text-xs text-emerald-950 uppercase bg-emerald-50">
                                     <tr>
                                         <th scope="col" class="px-4 py-3">رقم الفاتورة</th>
+                                        <th scope="col" class="px-4 py-3">الفرع / المسلخ المستلم</th>
                                         <th scope="col" class="px-4 py-3">المورد</th>
                                         <th scope="col" class="px-4 py-3">الصنف</th>
                                         <th scope="col" class="px-4 py-3">القيمة المالية</th>
-                                        <th scope="col" class="px-4 py-3">تاريخ الفاتورة</th>
                                         <th scope="col" class="px-4 py-3">تاريخ الاستلام</th>
                                         <th scope="col" class="px-4 py-3">الملف الداعم</th>
                                         <th scope="col" class="px-4 py-3 text-center">حذف</th>
@@ -838,18 +983,40 @@
                             </div>
                         </div>
 
-                        <!-- إضافة المواقع الجغرافية والفروع -->
+                        <!-- إدارة المسالخ والمواقع الجغرافية الهرمية -->
                         <div class="bg-white p-6 rounded-2xl shadow-sm border border-emerald-500/10 space-y-4">
-                            <h3 class="text-base md:text-lg font-bold text-gray-800 border-b pb-2"><i class="fa-solid fa-map-location-dot text-emerald-600 ml-2"></i>إدارة المواقع والفروع</h3>
-                            <form id="branch-form" onsubmit="addBranch(event)" class="space-y-3">
+                            <h3 class="text-base md:text-lg font-bold text-gray-800 border-b pb-2"><i class="fa-solid fa-map-location-dot text-emerald-600 ml-2"></i>إدارة المسالخ والفروع الهرمية</h3>
+                            
+                            <!-- إضافة مسلخ رئيسي -->
+                            <form onsubmit="addMainSlaughterhouse(event)" class="space-y-2 bg-slate-50 p-3 rounded-xl border">
+                                <span class="text-xs font-bold text-emerald-800">إضافة مسلخ رئيسي جديد</span>
                                 <div class="flex gap-2">
-                                    <input type="text" id="branch-name" required placeholder="اسم الفرع أو المسلخ الجديد..." class="flex-grow border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-emerald-500 outline-none">
-                                    <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-bold transition">إضافة موقع</button>
+                                    <input type="text" id="new-main-slaughterhouse" required placeholder="مثال: مسالخ مدينة الشارقة" class="flex-grow border border-gray-300 rounded-lg px-3 py-1.5 text-sm outline-none">
+                                    <button type="submit" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold">إضافة رئيسي</button>
                                 </div>
                             </form>
-                            <ul id="branches-list" class="space-y-1.5 max-h-32 overflow-y-auto">
-                                <!-- الفروع ديناميكياً -->
-                            </ul>
+
+                            <!-- إضافة مسلخ فرعي -->
+                            <form onsubmit="addSubSlaughterhouse(event)" class="space-y-2 bg-slate-50 p-3 rounded-xl border">
+                                <span class="text-xs font-bold text-emerald-800">إضافة وتفريع مسلخ فرعي</span>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <select id="select-main-for-sub" required class="border border-gray-300 rounded-lg px-3 py-1.5 text-sm outline-none bg-white">
+                                        <!-- سيتم تحميل المسالخ الرئيسية -->
+                                    </select>
+                                    <input type="text" id="new-sub-slaughterhouse" required placeholder="مثال: مسلخ الذيد الفرعي" class="border border-gray-300 rounded-lg px-3 py-1.5 text-sm outline-none">
+                                </div>
+                                <div class="flex justify-end">
+                                    <button type="submit" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold">إضافة وتفريع الفرعي</button>
+                                </div>
+                            </form>
+
+                            <!-- شجرة العرض والتحكم بالمسالخ الحالية -->
+                            <div>
+                                <span class="text-xs font-bold text-slate-500 block mb-2">الهيكل الحالي للمسالخ والفروع:</span>
+                                <div id="slaughterhouses-tree" class="space-y-3 max-h-48 overflow-y-auto border p-3 rounded-lg bg-white">
+                                    <!-- سيتم عرض الشجرة الهرمية للمسالخ ديناميكياً -->
+                                </div>
+                            </div>
                         </div>
 
                         <!-- شاشة إضافة مستخدمي النظام والتحكم بصلاحياتهم -->
@@ -957,7 +1124,7 @@
 
                 <!-- تفاصيل جدول الراتب الإضافي للتنسيق الجمالي والاحترافي -->
                 <div class="border border-gray-300 rounded-lg overflow-hidden my-6">
-                    <div class="bg-emerald-50 px-4 py-2 font-bold text-emerald-900 text-sm border-b">تفاصيل المستحقات المالية الشهرية:</div>
+                    <div class="bg-emerald-50 px-4 py-2 font-bold text-emerald-900 text-sm border-b">تفاصيل المستحقات المالية والشؤون المهنية:</div>
                     <div class="grid grid-cols-2 text-sm">
                         <div class="p-3 border-r border-b"><span class="font-bold text-gray-500 ml-2">الراتب الأساسي الشهري:</span> <span id="cert-salary-val" class="font-semibold text-emerald-800">---</span> درهم إماراتي</div>
                         <div class="p-3 border-b"><span class="font-bold text-gray-500 ml-2">تاريخ إصدار الشهادة:</span> <span id="cert-date-val">---</span></div>
@@ -1008,7 +1175,7 @@
             "الإمارات", "السعودية", "مصر", "عمان", "الكويت", "البحرين", "قطر", "الأردن", "العراق", 
             "سوريا", "لبنان", "فلسطين", "اليمن", "السودان", "ليبيا", "الجزائر", "المغرب", "تونس", 
             "موريتانيا", "الصومال", "الهند", "باكستان", "بنجلاديش", "الفلبين", "نيبال", "إندونيسيا",
-            "أفغانستان", "تركيا", "إران", "المملكة المتحدة", "الولايات المتحدة", "كندا", "أستراليا"
+            "أفغانستان", "تركيا", "إيران", "المملكة المتحدة", "الولايات المتحدة", "كندا", "أستراليا"
         ];
 
         // تهيئة قواعد البيانات محلياً في حال عدم وجودها
@@ -1023,7 +1190,12 @@
                 users: [
                     { empId: "70062", name: "أدمن الجزيرة", code: "123456", role: "كامل الصلاحيات (أدمن)" }
                 ],
-                branches: ["مسلخ الشارقة الرئيسي", "مسلخ دبي المركزي", "حظائر الاستيراد والتوزيع"],
+                // الهيكل الافتراضي الهرمي للمسالخ والفروع
+                slaughterhouses: {
+                    "مسالخ منطقة الظفرة": ["مسلخ مدينة غياثي", "مسلخ مدينة السلع"],
+                    "مسالخ مدينة أبوظبي": ["مسلخ بني ياس"],
+                    "مسالخ مدينة العين": ["مسلخ اليحر"]
+                },
                 welcomeImage: "https://images.unsplash.com/photo-1500595046743-cd271d694d30?auto=format&fit=crop&q=80&w=800",
                 logoImage: "https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&q=80&w=80"
             },
@@ -1035,10 +1207,19 @@
 
         // التحميل من الذاكرة المحلية
         function loadStateFromStorage() {
-            const saved = localStorage.getItem('grisland_admin_state_v2');
+            const saved = localStorage.getItem('grisland_admin_state_v4');
             if (saved) {
                 try {
-                    appState = JSON.parse(saved);
+                    const parsed = JSON.parse(saved);
+                    // التحقق من تواجد الهيكلية الجغرافية المحدثة
+                    if (!parsed.settings.slaughterhouses) {
+                        parsed.settings.slaughterhouses = {
+                            "مسالخ منطقة الظفرة": ["مسلخ مدينة غياثي", "مسلخ مدينة السلع"],
+                            "مسالخ مدينة أبوظبي": ["مسلخ بني ياس"],
+                            "مسالخ مدينة العين": ["مسلخ اليحر"]
+                        };
+                    }
+                    appState = parsed;
                 } catch(e) {
                     console.error("خطأ في قراءة بيانات التخزين المحلي، سيتم استخدام البيانات الافتراضية", e);
                 }
@@ -1047,7 +1228,7 @@
 
         // الحفظ في الذاكرة المحلية
         function saveStateToStorage() {
-            localStorage.setItem('grisland_admin_state_v2', JSON.stringify(appState));
+            localStorage.setItem('grisland_admin_state_v4', JSON.stringify(appState));
         }
 
         // ساعة وتاريخ حي في الفوتر
@@ -1062,21 +1243,16 @@
 
         // التحكم في إخفاء وإظهار شريط التنقل الجانبي ديناميكياً
         function toggleSidebar() {
-            const sidebar = document.getElementById('app-sidebar');
-            const backdrop = document.getElementById('sidebar-backdrop');
-            
             isSidebarOpen = !isSidebarOpen;
-            
             applySidebarClasses();
         }
 
         function applySidebarClasses() {
             const sidebar = document.getElementById('app-sidebar');
             const backdrop = document.getElementById('sidebar-backdrop');
-            const isMobile = window.innerWidth < 768; // شاشات الموبايل
+            const isMobile = window.innerWidth < 768;
 
             if (isMobile) {
-                // وضعية الجوال
                 if (isSidebarOpen) {
                     sidebar.classList.remove('translate-x-full');
                     sidebar.classList.add('translate-x-0');
@@ -1087,7 +1263,6 @@
                     backdrop.classList.add('hidden');
                 }
             } else {
-                // وضعية الكمبيوتر
                 backdrop.classList.add('hidden');
                 if (isSidebarOpen) {
                     sidebar.classList.remove('md:w-0', 'md:overflow-hidden', 'md:opacity-0', 'md:p-0');
@@ -1103,11 +1278,9 @@
             }
         }
 
-        // مراقبة حجم النافذة لتنظيم الشريط تلقائياً
         window.addEventListener('resize', () => {
             const isMobile = window.innerWidth < 768;
             if (!isMobile) {
-                // تصفير غطاء الخلفية عند العودة للكمبيوتر
                 document.getElementById('sidebar-backdrop').classList.add('hidden');
             }
             applySidebarClasses();
@@ -1120,7 +1293,6 @@
             populateNationalities();
             generateNextEmpId();
 
-            // ضبط حالة القائمة الافتراضية بناء على حجم الشاشة لتكون متجاوبة فوراً
             isSidebarOpen = window.innerWidth >= 768;
             applySidebarClasses();
 
@@ -1195,7 +1367,10 @@
                 if (setDiv) setDiv.classList.add('hidden');
             }
 
-            renderBranchesList();
+            // تحديث قوائم المسالخ في كافة الشاشات والنموذج والفلتر
+            updateSlaughterhouseDropdowns();
+            renderSlaughterhousesTree();
+
             populateEmployeesDropdowns();
             switchScreen('welcome');
             
@@ -1235,7 +1410,6 @@
                 }
             });
 
-            // إغلاق الشريط الجانبي في الجوال بمجرد النقر والتحويل
             if (window.innerWidth < 768) {
                 isSidebarOpen = false;
                 applySidebarClasses();
@@ -1243,6 +1417,292 @@
 
             populateEmployeesDropdowns();
         }
+
+        // --- نظام المسالخ والفروع الهرمي الديناميكي وربطها بالمدخلات والفلاتر ---
+
+        // تحديث قوائم خيارات المسالخ الرئيسية والفرعية لكافة شاشات البرنامج
+        function updateSlaughterhouseDropdowns() {
+            // القوائم والمدخلات
+            const mainEmpDropdown = document.getElementById('emp-main-slaughterhouse');
+            const mainSettingsDropdown = document.getElementById('select-main-for-sub');
+            const mainMaintDropdown = document.getElementById('maint-main-location');
+            const mainInvDropdown = document.getElementById('inv-main-location');
+            const mainPurDropdown = document.getElementById('pur-main-location');
+
+            // الفلاتر العلوية
+            const filterEmpMain = document.getElementById('filter-emp-main');
+            const filterAttMain = document.getElementById('filter-att-main');
+            const filterMaintMain = document.getElementById('filter-maint-main');
+            const filterInvMain = document.getElementById('filter-inv-main');
+            const filterPurMain = document.getElementById('filter-pur-main');
+
+            const allSelectors = [
+                mainEmpDropdown, mainSettingsDropdown, mainMaintDropdown, 
+                mainInvDropdown, mainPurDropdown
+            ];
+
+            const allFilters = [
+                filterEmpMain, filterAttMain, filterMaintMain, filterInvMain, filterPurMain
+            ];
+
+            const mainLocations = Object.keys(appState.settings.slaughterhouses);
+
+            // ملء قوائم الإدخال الأساسية
+            allSelectors.forEach(selector => {
+                if (!selector) return;
+                selector.innerHTML = '';
+                if (mainLocations.length === 0) {
+                    selector.innerHTML = '<option value="">لا توجد مسالخ مسجلة</option>';
+                    return;
+                }
+                mainLocations.forEach(loc => {
+                    const opt = document.createElement('option');
+                    opt.value = loc;
+                    opt.innerText = loc;
+                    selector.appendChild(opt);
+                });
+            });
+
+            // ملء فلاتر العرض والبحث
+            allFilters.forEach(filter => {
+                if (!filter) return;
+                filter.innerHTML = '<option value="">الكل</option>';
+                mainLocations.forEach(loc => {
+                    const opt = document.createElement('option');
+                    opt.value = loc;
+                    opt.innerText = loc;
+                    filter.appendChild(opt);
+                });
+            });
+
+            // تحديث الفروع والقوائم الفرعية تلقائياً
+            updateSubSlaughterhouseDropdown();
+            updateMaintSubLocationDropdown();
+            updateInvSubLocationDropdown();
+            updatePurSubLocationDropdown();
+        }
+
+        // تحديث القائمة المنسدلة للمسالخ الفرعية بناءً على الرئيسي المختار في استمارة الموظف
+        function updateSubSlaughterhouseDropdown() {
+            const mainDropdown = document.getElementById('emp-main-slaughterhouse');
+            const subDropdown = document.getElementById('emp-sub-slaughterhouse');
+            populateSubDropdown(mainDropdown, subDropdown);
+        }
+
+        // تحديث القائمة الفرعية للصيانة
+        function updateMaintSubLocationDropdown() {
+            const mainDropdown = document.getElementById('maint-main-location');
+            const subDropdown = document.getElementById('maint-sub-location');
+            populateSubDropdown(mainDropdown, subDropdown);
+        }
+
+        // تحديث القائمة الفرعية للمخزون
+        function updateInvSubLocationDropdown() {
+            const mainDropdown = document.getElementById('inv-main-location');
+            const subDropdown = document.getElementById('inv-sub-location');
+            populateSubDropdown(mainDropdown, subDropdown);
+        }
+
+        // تحديث القائمة الفرعية للمشتريات
+        function updatePurSubLocationDropdown() {
+            const mainDropdown = document.getElementById('pur-main-location');
+            const subDropdown = document.getElementById('pur-sub-location');
+            populateSubDropdown(mainDropdown, subDropdown);
+        }
+
+        // دالة مساعدة لملء القوائم الفرعية ديناميكياً
+        function populateSubDropdown(mainDropdown, subDropdown) {
+            if (!mainDropdown || !subDropdown) return;
+            subDropdown.innerHTML = '';
+            const selectedMain = mainDropdown.value;
+
+            if (!selectedMain || !appState.settings.slaughterhouses[selectedMain]) {
+                subDropdown.innerHTML = '<option value="">-- اختر المسلخ الرئيسي أولاً --</option>';
+                return;
+            }
+
+            const branches = appState.settings.slaughterhouses[selectedMain];
+            if (branches.length === 0) {
+                subDropdown.innerHTML = '<option value="">لا توجد فروع مدرجة</option>';
+                return;
+            }
+
+            branches.forEach(branch => {
+                const opt = document.createElement('option');
+                opt.value = branch;
+                opt.innerText = branch;
+                subDropdown.appendChild(opt);
+            });
+        }
+
+        // معالجة تغيير فلتر الموظفين
+        function onEmpFilterMainChange() {
+            const main = document.getElementById('filter-emp-main').value;
+            const sub = document.getElementById('filter-emp-sub');
+            populateFilterSubDropdown(main, sub);
+            renderEmployeesTable();
+        }
+
+        // معالجة تغيير فلتر الحضور
+        function onAttFilterMainChange() {
+            const main = document.getElementById('filter-att-main').value;
+            const sub = document.getElementById('filter-att-sub');
+            populateFilterSubDropdown(main, sub);
+            renderAttendanceTable();
+        }
+
+        // معالجة تغيير فلتر الصيانة
+        function onMaintFilterMainChange() {
+            const main = document.getElementById('filter-maint-main').value;
+            const sub = document.getElementById('filter-maint-sub');
+            populateFilterSubDropdown(main, sub);
+            renderMaintenanceTable();
+        }
+
+        // معالجة تغيير فلتر المخزون
+        function onInvFilterMainChange() {
+            const main = document.getElementById('filter-inv-main').value;
+            const sub = document.getElementById('filter-inv-sub');
+            populateFilterSubDropdown(main, sub);
+            renderInventoryTable();
+        }
+
+        // معالجة تغيير فلتر المشتريات
+        function onPurFilterMainChange() {
+            const main = document.getElementById('filter-pur-main').value;
+            const sub = document.getElementById('filter-pur-sub');
+            populateFilterSubDropdown(main, sub);
+            renderPurchasesTable();
+        }
+
+        // دالة مساعدة لتحديث فروع التصفية والفلترة
+        function populateFilterSubDropdown(selectedMain, subDropdown) {
+            if (!subDropdown) return;
+            subDropdown.innerHTML = '<option value="">الكل</option>';
+            if (selectedMain && appState.settings.slaughterhouses[selectedMain]) {
+                appState.settings.slaughterhouses[selectedMain].forEach(branch => {
+                    const opt = document.createElement('option');
+                    opt.value = branch;
+                    opt.innerText = branch;
+                    subDropdown.appendChild(opt);
+                });
+            }
+        }
+
+        // إضافة مسلخ رئيسي جديد من الإعدادات
+        function addMainSlaughterhouse(e) {
+            e.preventDefault();
+            const name = document.getElementById('new-main-slaughterhouse').value.trim();
+            if (!name) return;
+
+            if (appState.settings.slaughterhouses[name]) {
+                alertCustom("هذا المسلخ الرئيسي مسجل بالفعل بالنظام!");
+                return;
+            }
+
+            appState.settings.slaughterhouses[name] = [];
+            saveStateToStorage();
+            
+            document.getElementById('new-main-slaughterhouse').value = '';
+            updateSlaughterhouseDropdowns();
+            renderSlaughterhousesTree();
+            alertCustom("تمت إضافة المسلخ الرئيسي الجديد بنجاح!");
+        }
+
+        // إضافة مسلخ فرعي في الإعدادات
+        function addSubSlaughterhouse(e) {
+            e.preventDefault();
+            const mainName = document.getElementById('select-main-for-sub').value;
+            const subName = document.getElementById('new-sub-slaughterhouse').value.trim();
+
+            if (!mainName || !subName) return;
+
+            if (appState.settings.slaughterhouses[mainName].includes(subName)) {
+                alertCustom("هذا المسلخ الفرعي موجود مسبقاً تحت هذا التصنيف!");
+                return;
+            }
+
+            appState.settings.slaughterhouses[mainName].push(subName);
+            saveStateToStorage();
+
+            document.getElementById('new-sub-slaughterhouse').value = '';
+            updateSlaughterhouseDropdowns();
+            renderSlaughterhousesTree();
+            alertCustom(`تمت إضافة وتفريع المسلخ الفرعي بنجاح تحت: ${mainName}`);
+        }
+
+        // حذف مسلخ فرعي
+        function removeSubSlaughterhouse(mainName, subName) {
+            if (confirm(`هل أنت متأكد من حذف الفرع (${subName}) التابع لـ (${mainName})؟`)) {
+                appState.settings.slaughterhouses[mainName] = appState.settings.slaughterhouses[mainName].filter(s => s !== subName);
+                saveStateToStorage();
+                updateSlaughterhouseDropdowns();
+                renderSlaughterhousesTree();
+                alertCustom("تم حذف المسلخ الفرعي بنجاح.");
+            }
+        }
+
+        // حذف مسلخ رئيسي
+        function removeMainSlaughterhouse(mainName) {
+            if (confirm(`تحذير: سيؤدي حذف المسلخ الرئيسي (${mainName}) إلى حذف جميع الفروع التابعة له بالكامل. هل تريد المتابعة؟`)) {
+                delete appState.settings.slaughterhouses[mainName];
+                saveStateToStorage();
+                updateSlaughterhouseDropdowns();
+                renderSlaughterhousesTree();
+                alertCustom("تم حذف المسلخ الرئيسي وكافة فروع المسالخ التابعة له.");
+            }
+        }
+
+        // رندرة شجرة المسالخ والفروع الهيكلية في الإعدادات
+        function renderSlaughterhousesTree() {
+            const treeEl = document.getElementById('slaughterhouses-tree');
+            if (!treeEl) return;
+
+            treeEl.innerHTML = '';
+            const mainLocations = Object.keys(appState.settings.slaughterhouses);
+
+            if (mainLocations.length === 0) {
+                treeEl.innerHTML = '<p class="text-xs text-gray-400 text-center py-4">لم يتم تسجيل مسالخ أو فروع بالخادم حتى الآن.</p>';
+                return;
+            }
+
+            mainLocations.forEach(main => {
+                const mainDiv = document.createElement('div');
+                mainDiv.className = "border border-emerald-100 rounded-lg p-2.5 bg-emerald-50/20 space-y-1.5";
+                
+                const header = document.createElement('div');
+                header.className = "flex items-center justify-between border-b pb-1.5";
+                header.innerHTML = `
+                    <span class="text-xs font-bold text-emerald-900 flex items-center gap-1">
+                        <i class="fa-solid fa-hotel text-emerald-600"></i> ${main}
+                    </span>
+                    <button onclick="removeMainSlaughterhouse('${main}')" class="text-[10px] text-rose-600 hover:underline" title="حذف بالكامل"><i class="fa-solid fa-trash-can"></i> حذف الرئيسي</button>
+                `;
+                mainDiv.appendChild(header);
+
+                const branches = appState.settings.slaughterhouses[main];
+                const subUl = document.createElement('ul');
+                subUl.className = "pr-4 space-y-1 text-[11px] text-gray-600 list-disc list-inside";
+
+                if (branches.length === 0) {
+                    subUl.innerHTML = '<span class="text-[10px] text-gray-400 italic">لا توجد فروع مسالخ مندرجة حالياً.</span>';
+                } else {
+                    branches.forEach(branch => {
+                        const li = document.createElement('li');
+                        li.className = "flex items-center justify-between py-1 border-b border-gray-100/50";
+                        li.innerHTML = `
+                            <span>${branch}</span>
+                            <button onclick="removeSubSlaughterhouse('${main}', '${branch}')" class="text-rose-500 hover:text-rose-700 transition" title="حذف الفرع"><i class="fa-solid fa-xmark"></i></button>
+                        `;
+                        subUl.appendChild(li);
+                    });
+                }
+                mainDiv.appendChild(subUl);
+                treeEl.appendChild(mainDiv);
+            });
+        }
+
+        // --- شؤون الموظفين الأساسية ---
 
         // توليد رقم الموظف التسلسلي تلقائياً
         function generateNextEmpId() {
@@ -1257,7 +1717,8 @@
                 nextNum = Math.max(...nums) + 1;
             }
             const paddedNum = String(nextNum).padStart(4, '0');
-            document.getElementById('emp-id').value = prefix + paddedNum;
+            const targetEl = document.getElementById('emp-id');
+            if (targetEl) targetEl.value = prefix + paddedNum;
         }
 
         // معالجة الوظائف المخصصة الأخرى
@@ -1278,6 +1739,7 @@
             document.getElementById('form-emp-title').innerText = "إضافة موظف جديد";
             document.getElementById('custom-job-wrapper').classList.add('hidden');
             generateNextEmpId();
+            updateSlaughterhouseDropdowns();
         }
 
         // حفظ / تعديل بيانات موظف
@@ -1298,6 +1760,9 @@
                 job = document.getElementById('emp-job-custom').value.trim();
             }
 
+            const mainSlaughterhouse = document.getElementById('emp-main-slaughterhouse').value;
+            const subSlaughterhouse = document.getElementById('emp-sub-slaughterhouse').value;
+
             const passport = document.getElementById('emp-passport').value.trim();
             const nid = document.getElementById('emp-nid').value.trim();
             const phone = document.getElementById('emp-phone').value.trim();
@@ -1312,7 +1777,8 @@
 
             const empObj = {
                 empId, name, nationality, job, passport, nid, phone, salary, 
-                hireDate, passportExpiry, residenceExpiry, idExpiry, notes
+                hireDate, passportExpiry, residenceExpiry, idExpiry, notes,
+                mainSlaughterhouse, subSlaughterhouse
             };
 
             if (existingIndex > -1) {
@@ -1320,7 +1786,7 @@
                 alertCustom("تم تعديل بيانات الموظف بنجاح!");
             } else {
                 appState.employees.push(empObj);
-                alertCustom("تمت إضافة الموظف الجديد وحفظه بالنظام!");
+                alertCustom("تمت إضافة الموظف الجديد وحفظه بالنظام وتعيينه بالمسلخ المختار!");
             }
 
             saveStateToStorage();
@@ -1349,6 +1815,14 @@
                 document.getElementById('emp-job-custom').value = emp.job;
             }
 
+            if (emp.mainSlaughterhouse) {
+                document.getElementById('emp-main-slaughterhouse').value = emp.mainSlaughterhouse;
+                updateSubSlaughterhouseDropdown();
+                if (emp.subSlaughterhouse) {
+                    document.getElementById('emp-sub-slaughterhouse').value = emp.subSlaughterhouse;
+                }
+            }
+
             document.getElementById('emp-passport').value = emp.passport;
             document.getElementById('emp-nid').value = emp.nid;
             document.getElementById('emp-phone').value = emp.phone;
@@ -1375,32 +1849,41 @@
             }
         }
 
-        // رندرة جدول شؤون الموظفين
+        // رندرة جدول شؤون الموظفين مع الفلترة الجغرافية
         function renderEmployeesTable() {
             const tbody = document.getElementById('emp-table-body');
             tbody.innerHTML = '';
 
             const searchTerm = document.getElementById('emp-search').value.toLowerCase();
-            const filtered = appState.employees.filter(emp => 
-                emp.name.toLowerCase().includes(searchTerm) || 
-                emp.empId.toLowerCase().includes(searchTerm)
-            );
+            const filterMain = document.getElementById('filter-emp-main').value;
+            const filterSub = document.getElementById('filter-emp-sub').value;
+
+            const filtered = appState.employees.filter(emp => {
+                const matchesSearch = emp.name.toLowerCase().includes(searchTerm) || emp.empId.toLowerCase().includes(searchTerm);
+                const matchesMain = !filterMain || emp.mainSlaughterhouse === filterMain;
+                const matchesSub = !filterSub || emp.subSlaughterhouse === filterSub;
+                return matchesSearch && matchesMain && matchesSub;
+            });
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-gray-400 font-semibold">لا يوجد موظفون مسجلون حالياً بالمواصفات المطلوبة.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-gray-400 font-semibold">لا يوجد موظفون مطالعون للمواصفات أو الموقع المحدد.</td></tr>`;
                 return;
             }
 
             filtered.forEach(emp => {
                 const tr = document.createElement('tr');
                 tr.className = "border-b hover:bg-slate-50 transition";
+                const locationText = (emp.mainSlaughterhouse && emp.subSlaughterhouse) 
+                    ? `<span class="font-bold text-emerald-800">${emp.mainSlaughterhouse}</span><br><span class="text-slate-500 text-[11px]">${emp.subSlaughterhouse}</span>`
+                    : '<span class="text-gray-400 text-xs">غير محدد</span>';
+
                 tr.innerHTML = `
                     <td class="px-4 py-3 font-semibold text-emerald-800">${emp.empId}</td>
                     <td class="px-4 py-3 font-semibold text-slate-800">${emp.name}</td>
                     <td class="px-4 py-3 text-xs text-gray-600">${emp.job}</td>
+                    <td class="px-4 py-3 text-xs">${locationText}</td>
                     <td class="px-4 py-3 text-xs">${emp.nationality}</td>
-                    <td class="px-4 py-3 text-xs">${emp.nid}</td>
-                    <td class="px-4 py-3 font-semibold text-emerald-700">${emp.salary} درهم</td>
+                    <td class="px-4 py-3 font-semibold text-emerald-700">${parseFloat(emp.salary).toLocaleString()} درهم</td>
                     <td class="px-4 py-3 text-center">
                         <div class="flex items-center justify-center gap-1.5 flex-wrap">
                             <button onclick="editEmployee('${emp.empId}')" class="px-2 py-1 bg-amber-500 hover:bg-amber-600 text-white rounded text-xs transition" title="تعديل"><i class="fa-solid fa-pen"></i></button>
@@ -1413,7 +1896,7 @@
             });
         }
 
-        // توليد شهادة الراتب كـ PDF
+        // توليد شهادة الراتب كـ PDF بالصيغة القانونية المطلوبة
         function generateSalaryCertificate(empId) {
             const emp = appState.employees.find(e => e.empId === empId);
             if (!emp) return;
@@ -1436,7 +1919,7 @@
             html2pdf().from(element).set(options).save();
         }
 
-        // تعبئة حقول القوائم المنسدلة
+        // تعبئة حقول القوائم المنسدلة للموظفين
         function populateEmployeesDropdowns() {
             const dropdowns = ['leave-emp-id', 'leave-substitute-id', 'att-emp-id'];
             dropdowns.forEach(id => {
@@ -1502,7 +1985,7 @@
         }
 
         function deleteLeave(id) {
-            if (appState.currentActiveUser.role === "عرض فقط") {
+            if (appState.currentActiveUser.role === "عرض only") {
                 alertCustom("غير مسموح بالحذف لحساب المشاهدة فقط!");
                 return;
             }
@@ -1641,20 +2124,30 @@
             }
         }
 
-        // رندرة شيت الحضور والغياب
+        // رندرة شيت الحضور والغياب المصفى بالمواقع والتواريخ
         function renderAttendanceTable(filteredData = null) {
             const tbody = document.getElementById('attendance-table-body');
             tbody.innerHTML = '';
 
             const data = filteredData || appState.attendance;
+            const filterMain = document.getElementById('filter-att-main').value;
+            const filterSub = document.getElementById('filter-att-sub').value;
 
-            if (data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-gray-400">لا توجد سجلات حضور ورصد مطابقة للفلترة حالياً.</td></tr>`;
+            const finalFiltered = data.filter(a => {
+                const emp = appState.employees.find(e => e.empId === a.empId) || {};
+                const matchesMain = !filterMain || emp.mainSlaughterhouse === filterMain;
+                const matchesSub = !filterSub || emp.subSlaughterhouse === filterSub;
+                return matchesMain && matchesSub;
+            });
+
+            if (finalFiltered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center py-6 text-gray-400">لا توجد سجلات حضور ورصد مطابقة للفلترة والموقع المحدد حالياً.</td></tr>`;
                 return;
             }
 
-            data.forEach(a => {
-                const emp = appState.employees.find(e => e.empId === a.empId) || { name: 'موظف مجهول' };
+            finalFiltered.forEach(a => {
+                const emp = appState.employees.find(e => e.empId === a.empId) || { name: 'موظف مجهول', mainSlaughterhouse: '', subSlaughterhouse: '' };
+                const locationText = emp.mainSlaughterhouse ? `${emp.mainSlaughterhouse} - ${emp.subSlaughterhouse}` : 'غير محدد';
                 
                 let statusBadge = '';
                 if (a.status === 'حاضر') statusBadge = 'bg-green-100 text-green-800';
@@ -1667,6 +2160,7 @@
                 tr.innerHTML = `
                     <td class="px-4 py-3 font-semibold text-emerald-800">${a.empId}</td>
                     <td class="px-4 py-3 font-semibold text-slate-800">${emp.name}</td>
+                    <td class="px-4 py-3 text-xs text-slate-500">${locationText}</td>
                     <td class="px-4 py-3 text-xs">${a.date}</td>
                     <td class="px-4 py-3">
                         <span class="px-2 py-1 rounded-full text-xs font-bold ${statusBadge}">${a.status}</span>
@@ -1685,14 +2179,13 @@
             const from = document.getElementById('filter-att-from').value;
             const to = document.getElementById('filter-att-to').value;
 
-            if (!from || !to) {
-                alertCustom("الرجاء اختيار تاريخ البداية والنهاية لإتمام الفلترة!");
-                return;
-            }
+            let filtered = appState.attendance;
 
-            const filtered = appState.attendance.filter(a => {
-                return a.date >= from && a.date <= to;
-            });
+            if (from && to) {
+                filtered = appState.attendance.filter(a => {
+                    return a.date >= from && a.date <= to;
+                });
+            }
 
             renderAttendanceTable(filtered);
         }
@@ -1710,7 +2203,7 @@
         }
 
 
-        // إدارة الصيانة والحركة للمركبات
+        // إدارة الصيانة والحركة للمركبات والمسالخ
         function submitMaintenance(e) {
             e.preventDefault();
             if (appState.currentActiveUser.role === "عرض فقط") {
@@ -1723,6 +2216,9 @@
             const priority = document.getElementById('maint-priority').value;
             const fileInput = document.getElementById('maint-file');
             
+            const mainLocation = document.getElementById('maint-main-location').value;
+            const subLocation = document.getElementById('maint-sub-location').value;
+
             let fileName = 'لا يوجد ملف داعم';
             if (fileInput.files.length > 0) {
                 fileName = fileInput.files[0].name;
@@ -1731,6 +2227,7 @@
             const maintObj = {
                 id: Date.now(),
                 asset, desc, priority, fileName,
+                mainLocation, subLocation,
                 date: new Date().toLocaleDateString('ar-EG'),
                 status: "قيد المراجعة"
             };
@@ -1739,7 +2236,7 @@
             saveStateToStorage();
             document.getElementById('maintenance-form').reset();
             renderMaintenanceTable();
-            alertCustom("تم حفظ ورفع بلاغ الصيانة والمرفقات الداعمة للأعطال!");
+            alertCustom("تم حفظ ورفع بلاغ الصيانة وإسناده للموقع المختار!");
         }
 
         function updateMaintStatus(id, newStatus) {
@@ -1765,12 +2262,21 @@
             const tbody = document.getElementById('maintenance-table-body');
             tbody.innerHTML = '';
 
-            if (appState.maintenance.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-gray-400">لا يوجد بلاغات صيانة حالية.</td></tr>`;
+            const filterMain = document.getElementById('filter-maint-main').value;
+            const filterSub = document.getElementById('filter-maint-sub').value;
+
+            const filtered = appState.maintenance.filter(m => {
+                const matchesMain = !filterMain || m.mainLocation === filterMain;
+                const matchesSub = !filterSub || m.subLocation === filterSub;
+                return matchesMain && matchesSub;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-gray-400">لا يوجد بلاغات صيانة حالية للموقع المختار.</td></tr>`;
                 return;
             }
 
-            appState.maintenance.forEach(m => {
+            filtered.forEach(m => {
                 let badge = '';
                 if (m.priority === 'حرج جداً') badge = 'text-red-600 bg-red-100 font-bold';
                 else if (m.priority === 'متوسط') badge = 'text-amber-600 bg-amber-100';
@@ -1780,11 +2286,11 @@
                 tr.className = "border-b hover:bg-slate-50 transition text-xs";
                 tr.innerHTML = `
                     <td class="px-4 py-3 font-semibold text-slate-800">${m.asset}</td>
+                    <td class="px-4 py-3 text-emerald-800 font-bold">${m.mainLocation || 'غير محدد'}<br><span class="text-slate-400 font-normal text-[10px]">${m.subLocation || ''}</span></td>
                     <td class="px-4 py-3 text-gray-600">${m.desc}</td>
                     <td class="px-4 py-3"><span class="px-2 py-1 rounded-full ${badge}">${m.priority}</span></td>
                     <td class="px-4 py-3">${m.date}</td>
                     <td class="px-4 py-3 font-semibold text-emerald-800">${m.status}</td>
-                    <td class="px-4 py-3 text-gray-400 italic flex items-center gap-1 max-w-[120px] truncate" title="${m.fileName}"><i class="fa-solid fa-file-arrow-up"></i> ${m.fileName}</td>
                     <td class="px-4 py-3 text-center">
                         <div class="flex items-center justify-center gap-1.5">
                             <select onchange="updateMaintStatus(${m.id}, this.value)" class="text-[10px] border rounded bg-emerald-50 px-1 py-0.5">
@@ -1793,7 +2299,7 @@
                                 <option value="قيد الإصلاح الفني">قيد الإصلاح</option>
                                 <option value="تم الإصلاح وإغلاق البلاغ">تم الإصلاح</option>
                             </select>
-                            <button onclick="deleteMaint(${m.id})" class="text-rose-600 hover:text-rose-800 transition"><i class="fa-solid fa-trash-can"></i></button>
+                            <button onclick="deleteMaint(${m.id})" class="text-rose-600 hover:text-rose-800 transition" title="حذف البلاغ"><i class="fa-solid fa-trash-can"></i></button>
                         </div>
                     </td>
                 `;
@@ -1824,6 +2330,9 @@
             const code = document.getElementById('inv-code').value.trim();
             const name = document.getElementById('inv-name').value.trim();
             
+            const mainLocation = document.getElementById('inv-main-location').value;
+            const subLocation = document.getElementById('inv-sub-location').value;
+
             let unit = document.getElementById('inv-unit').value;
             if (unit === "أخرى") {
                 unit = document.getElementById('inv-unit-custom').value.trim();
@@ -1834,7 +2343,12 @@
             const storageType = document.getElementById('inv-storage-type').value.trim() || 'عام';
             const expiry = document.getElementById('inv-expiry').value || 'غير محدد';
 
-            const existingIndex = appState.inventory.findIndex(item => item.code === code);
+            // البحث والمطابقة حسب كود الصنف والمستودع التابع له (الموقع الجغرافي الرئيسي والفرعي) لضمان دقة الرصيد المحلي للفرع
+            const existingIndex = appState.inventory.findIndex(item => 
+                item.code === code && 
+                item.mainLocation === mainLocation && 
+                item.subLocation === subLocation
+            );
 
             if (existingIndex > -1) {
                 let currentQty = parseInt(appState.inventory[existingIndex].qty);
@@ -1842,7 +2356,7 @@
                     currentQty += qty;
                 } else {
                     if (currentQty < qty) {
-                        alertCustom(`عذراً، كمية الصرف أكبر من الرصيد المتوفر! المتاح: ${currentQty}`);
+                        alertCustom(`عذراً، كمية الصرف أكبر من الرصيد المتوفر في هذا المستودع! الرصيد المتاح: ${currentQty}`);
                         return;
                     }
                     currentQty -= qty;
@@ -1852,29 +2366,32 @@
                 appState.inventory[existingIndex].unit = unit; 
                 appState.inventory[existingIndex].storageType = storageType; 
                 appState.inventory[existingIndex].expiry = expiry; 
-                alertCustom("تم تعديل الحركة المخزنية وحساب الرصيد بنجاح!");
+                alertCustom("تم تحديل الحركة المخزنية وحساب الرصيد الجغرافي للمستودع بنجاح!");
             } else {
                 if (flow === "صادر") {
-                    alertCustom("لا يمكن بدء تسجيل صنف جديد بحركة صادر!");
+                    alertCustom("لا يمكن بدء تسجيل صنف جديد في مستودع بحركة صرف وصادر!");
                     return;
                 }
                 const newItem = {
-                    code, name, unit, qty, storageType, expiry
+                    code, name, unit, qty, storageType, expiry, mainLocation, subLocation
                 };
                 appState.inventory.push(newItem);
-                alertCustom("تم تسجيل الصنف الجديد بنجاح في المستودع!");
+                alertCustom("تم تسجيل الصنف الجديد بنجاح في المستودع والموقع المحدد!");
             }
 
             saveStateToStorage();
             document.getElementById('inventory-form').reset();
             document.getElementById('inv-unit-custom').classList.add('hidden');
+            updateSlaughterhouseDropdowns();
             renderInventoryTable();
         }
 
-        function deleteInventoryItem(code) {
+        function deleteInventoryItem(code, main, sub) {
             if (appState.currentActiveUser.role === "عرض فقط") return;
-            if (confirm("هل تريد تصفير وحذف هذا الصنف نهائياً؟")) {
-                appState.inventory = appState.inventory.filter(i => i.code !== code);
+            if (confirm("هل تريد حذف هذا الصنف من هذا المستودع نهائياً؟")) {
+                appState.inventory = appState.inventory.filter(i => 
+                    !(i.code === code && i.mainLocation === main && i.subLocation === sub)
+                );
                 saveStateToStorage();
                 renderInventoryTable();
             }
@@ -1884,23 +2401,32 @@
             const tbody = document.getElementById('inventory-table-body');
             tbody.innerHTML = '';
 
-            if (appState.inventory.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-gray-400">لا يوجد أصناف في المخزن حالياً.</td></tr>`;
+            const filterMain = document.getElementById('filter-inv-main').value;
+            const filterSub = document.getElementById('filter-inv-sub').value;
+
+            const filtered = appState.inventory.filter(i => {
+                const matchesMain = !filterMain || i.mainLocation === filterMain;
+                const matchesSub = !filterSub || i.subLocation === filterSub;
+                return matchesMain && matchesSub;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-gray-400">لا يوجد أصناف في مستودع هذا الموقع حالياً.</td></tr>`;
                 return;
             }
 
-            appState.inventory.forEach(i => {
+            filtered.forEach(i => {
                 const tr = document.createElement('tr');
                 tr.className = "border-b hover:bg-slate-50 transition";
                 tr.innerHTML = `
                     <td class="px-4 py-3 font-semibold text-slate-800">${i.code}</td>
                     <td class="px-4 py-3 font-bold text-emerald-950">${i.name}</td>
+                    <td class="px-4 py-3 text-xs text-emerald-800 font-bold">${i.mainLocation || 'غير محدد'}<br><span class="text-gray-400 font-normal text-[10px]">${i.subLocation || ''}</span></td>
                     <td class="px-4 py-3 text-xs">${i.unit}</td>
                     <td class="px-4 py-3 font-bold ${i.qty <= 5 ? 'text-red-600 bg-red-50' : 'text-slate-800'}">${i.qty}</td>
                     <td class="px-4 py-3 text-xs">${i.expiry}</td>
-                    <td class="px-4 py-3 text-xs">${i.storageType}</td>
                     <td class="px-4 py-3 text-center">
-                        <button onclick="deleteInventoryItem('${i.code}')" class="text-rose-600 hover:text-rose-800 transition"><i class="fa-solid fa-trash-can"></i></button>
+                        <button onclick="deleteInventoryItem('${i.code}', '${i.mainLocation}', '${i.subLocation}')" class="text-rose-600 hover:text-rose-800 transition" title="حذف الصنف"><i class="fa-solid fa-trash-can"></i></button>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -1911,7 +2437,7 @@
             const element = document.getElementById('inventory-report-table');
             const options = {
                 margin:       [15, 15, 15, 15],
-                filename:     `سجل_الكميات_والأرصدة_المخزنية_المعتمة.pdf`,
+                filename:     `جرد_مستودعات_الجزيرة_الخضراء.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { scale: 2 },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
@@ -1936,6 +2462,9 @@
             const price = document.getElementById('pur-price').value;
             const fileInput = document.getElementById('pur-file');
 
+            const mainLocation = document.getElementById('pur-main-location').value;
+            const subLocation = document.getElementById('pur-sub-location').value;
+
             let fileName = 'لا يوجد ملف فاتورة';
             if (fileInput.files.length > 0) {
                 fileName = fileInput.files[0].name;
@@ -1943,14 +2472,16 @@
 
             const purObj = {
                 id: Date.now(),
-                invoice, dateInvoice, dateRecv, vendor, item, price, fileName
+                invoice, dateInvoice, dateRecv, vendor, item, price, fileName,
+                mainLocation, subLocation
             };
 
             appState.purchases.push(purObj);
             saveStateToStorage();
             document.getElementById('purchase-form').reset();
+            updateSlaughterhouseDropdowns();
             renderPurchasesTable();
-            alertCustom("تمت إضافة الفاتورة المالية وجاري ترحيلها وحفظها!");
+            alertCustom("تمت إضافة الفاتورة المالية وجاري ترحيلها وحسابها على الفرع المحدد!");
         }
 
         function deletePurchase(id) {
@@ -1966,24 +2497,33 @@
             const tbody = document.getElementById('purchases-table-body');
             tbody.innerHTML = '';
 
-            if (appState.purchases.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="text-center py-6 text-gray-400">لا يوجد سجل فواتير مشتريات مدخلة بعد.</td></tr>`;
+            const filterMain = document.getElementById('filter-pur-main').value;
+            const filterSub = document.getElementById('filter-pur-sub').value;
+
+            const filtered = appState.purchases.filter(p => {
+                const matchesMain = !filterMain || p.mainLocation === filterMain;
+                const matchesSub = !filterSub || p.subLocation === filterSub;
+                return matchesMain && matchesSub;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center py-6 text-gray-400">لا يوجد سجل فواتير مشتريات للفرع المحدد.</td></tr>`;
                 return;
             }
 
-            appState.purchases.forEach(p => {
+            filtered.forEach(p => {
                 const tr = document.createElement('tr');
                 tr.className = "border-b hover:bg-slate-50 transition text-xs";
                 tr.innerHTML = `
                     <td class="px-4 py-3 font-semibold text-emerald-800">${p.invoice}</td>
+                    <td class="px-4 py-3 font-bold text-emerald-900">${p.mainLocation || 'غير محدد'}<br><span class="text-gray-400 font-normal text-[10px]">${p.subLocation || ''}</span></td>
                     <td class="px-4 py-3 font-semibold text-slate-800">${p.vendor}</td>
                     <td class="px-4 py-3">${p.item}</td>
                     <td class="px-4 py-3 font-bold text-slate-700">${parseFloat(p.price).toLocaleString()} درهم</td>
-                    <td class="px-4 py-3">${p.dateInvoice}</td>
                     <td class="px-4 py-3">${p.dateRecv}</td>
                     <td class="px-4 py-3 text-emerald-600 flex items-center gap-1 max-w-[150px] truncate" title="${p.fileName}"><i class="fa-solid fa-file-pdf"></i> ${p.fileName}</td>
                     <td class="px-4 py-3 text-center">
-                        <button onclick="deletePurchase(${p.id})" class="text-rose-600 hover:text-rose-800 transition"><i class="fa-solid fa-trash-can"></i></button>
+                        <button onclick="deletePurchase(${p.id})" class="text-rose-600 hover:text-rose-800 transition" title="حذف الفاتورة"><i class="fa-solid fa-trash-can"></i></button>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -2005,6 +2545,7 @@
             }
         }
 
+        // رفع الصورة الترحيبية
         function uploadWelcomeImg(inputObj) {
             if (inputObj.files && inputObj.files[0]) {
                 const reader = new FileReader();
@@ -2018,6 +2559,7 @@
             }
         }
 
+        // إعادة الضبط للمصنع
         function resetBranding() {
             appState.settings.logoImage = "https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&q=80&w=80";
             appState.settings.welcomeImage = "https://images.unsplash.com/photo-1500595046743-cd271d694d30?auto=format&fit=crop&q=80&w=800";
@@ -2026,40 +2568,7 @@
             alertCustom("تمت إعادة تعيين صور الهوية والترحيبية الافتراضية.");
         }
 
-        function addBranch(e) {
-            e.preventDefault();
-            const name = document.getElementById('branch-name').value.trim();
-            if (!appState.settings.branches.includes(name)) {
-                appState.settings.branches.push(name);
-                saveStateToStorage();
-                document.getElementById('branch-form').reset();
-                renderBranchesList();
-                alertCustom("تمت إضافة الموقع بنجاح!");
-            }
-        }
-
-        function removeBranch(idx) {
-            if (confirm("هل تريد حذف هذا الموقع؟")) {
-                appState.settings.branches.splice(idx, 1);
-                saveStateToStorage();
-                renderBranchesList();
-            }
-        }
-
-        function renderBranchesList() {
-            const listEl = document.getElementById('branches-list');
-            listEl.innerHTML = '';
-            appState.settings.branches.forEach((b, idx) => {
-                const li = document.createElement('li');
-                li.className = "flex items-center justify-between text-xs bg-slate-100 p-2 rounded-lg border";
-                li.innerHTML = `
-                    <span class="font-semibold text-slate-700">${b}</span>
-                    <button onclick="removeBranch(${idx})" class="text-rose-600 hover:text-rose-800 transition"><i class="fa-solid fa-trash"></i></button>
-                `;
-                listEl.appendChild(li);
-            });
-        }
-
+        // إنشاء مستخدم جديد
         function createNewUser(e) {
             e.preventDefault();
             const empId = document.getElementById('new-user-id').value.trim();
@@ -2081,6 +2590,7 @@
             alertCustom("تم إنشاء حساب المستخدم بنجاح!");
         }
 
+        // حذف مستخدم
         function deleteSystemUser(empId) {
             if (empId === "70062") {
                 alertCustom("لا يمكن حذف حساب الأدمن الافتراضي!");
@@ -2094,6 +2604,7 @@
             }
         }
 
+        // رندرة مستخدمي النظام في شاشة الإعدادات
         function renderSystemUsersTable() {
             const tbody = document.getElementById('system-users-table');
             tbody.innerHTML = '';
@@ -2117,7 +2628,7 @@
         // مودال للتنبيهات بديل للأليرت
         function alertCustom(message) {
             const modal = document.createElement('div');
-            modal.className = "fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-50 transition-all duration-300";
+            modal.className = "fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-50 transition-all duration-300 animate-fade-in";
             modal.innerHTML = `
                 <div class="bg-white p-6 rounded-2xl shadow-2xl max-w-sm w-full mx-4 border border-emerald-500 text-center space-y-4">
                     <div class="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto text-emerald-600 text-2xl">
